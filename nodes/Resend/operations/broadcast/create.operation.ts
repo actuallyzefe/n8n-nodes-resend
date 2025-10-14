@@ -50,7 +50,12 @@ export async function createBroadcast(
 		body.name = additionalFields.name;
 	}
 
-	const responseData = await resendApiRequest.call(this, 'POST', RESEND_API_ENDPOINTS.BROADCASTS, body as unknown as IDataObject);
+	const responseData = await resendApiRequest.call(
+		this,
+		'POST',
+		RESEND_API_ENDPOINTS.BROADCASTS,
+		(body as unknown) as IDataObject,
+	);
 
 	return {
 		json: responseData as IDataObject,

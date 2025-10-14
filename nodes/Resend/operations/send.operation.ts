@@ -91,7 +91,12 @@ export async function sendEmail(
 	}
 
 	// Make API request
-	const responseData = await resendApiRequest.call(this, 'POST', RESEND_API_ENDPOINTS.EMAILS, body as unknown as IDataObject);
+	const responseData = await resendApiRequest.call(
+		this,
+		'POST',
+		RESEND_API_ENDPOINTS.EMAILS,
+		(body as unknown) as IDataObject,
+	);
 
 	return {
 		json: responseData as IDataObject,

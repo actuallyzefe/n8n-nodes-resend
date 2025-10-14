@@ -10,7 +10,7 @@ export async function resendApiRequest(
 	endpoint: string,
 	body?: IDataObject,
 	qs?: IDataObject,
-): Promise<any> {
+): Promise<IDataObject> {
 	const options = {
 		method,
 		url: `${RESEND_API_BASE_URL}${endpoint}`,
@@ -19,6 +19,9 @@ export async function resendApiRequest(
 		json: true,
 	};
 
-	return await this.helpers.httpRequestWithAuthentication.call(this, 'resendApi', options);
+	return (await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		'resendApi',
+		options,
+	)) as IDataObject;
 }
-

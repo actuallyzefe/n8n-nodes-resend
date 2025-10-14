@@ -1,8 +1,8 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
-import type { IEmailData } from './types';
-import { parseEmailList } from './types';
-import { RESEND_API_ENDPOINTS } from './constants';
-import { resendApiRequest } from './helpers';
+import type { IEmailData } from '../types';
+import { parseEmailList } from '../types';
+import { RESEND_API_ENDPOINTS } from '../constants';
+import { resendApiRequest } from '../helpers';
 
 /**
  * Execute the send email operation

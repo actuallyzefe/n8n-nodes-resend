@@ -1,6 +1,6 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
-import { RESEND_API_ENDPOINTS } from './constants';
-import { resendApiRequest } from './helpers';
+import { RESEND_API_ENDPOINTS } from '../constants';
+import { resendApiRequest } from '../helpers';
 
 /**
  * Execute the cancel scheduled email operation

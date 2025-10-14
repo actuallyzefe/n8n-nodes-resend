@@ -1,6 +1,7 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
-import { RESEND_API_BASE_URL, RESEND_API_ENDPOINTS } from '../constants';
+import { RESEND_API_ENDPOINTS } from '../constants';
+import { resendApiRequest } from '../helpers';
 
 /**
  * Execute the create broadcast operation
@@ -49,13 +50,7 @@ export async function createBroadcast(
 		body.name = additionalFields.name;
 	}
 
-	const responseData = await this.helpers.requestWithAuthentication.call(this, 'resendApi', {
-		method: 'POST',
-		baseURL: RESEND_API_BASE_URL,
-		url: RESEND_API_ENDPOINTS.BROADCASTS,
-		body,
-		json: true,
-	});
+	const responseData = await resendApiRequest.call(this, 'POST', RESEND_API_ENDPOINTS.BROADCASTS, body as unknown as IDataObject);
 
 	return {
 		json: responseData as IDataObject,

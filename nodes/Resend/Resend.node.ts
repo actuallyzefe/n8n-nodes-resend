@@ -4,7 +4,7 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionTypes } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { emailDescription } from './resources/email';
 import { audienceDescription } from './resources/audience';
 import { contactDescription } from './resources/contact';
@@ -32,7 +32,7 @@ export class Resend implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Resend',
 		name: 'resend',
-		icon: 'file:resend.dark.svg',
+		icon: 'file:resend.svg',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -117,7 +117,11 @@ export class Resend implements INodeType {
 							break;
 
 						default:
-							throw new Error(`The operation "${operation}" is not supported for Email`);
+							throw new NodeOperationError(
+								this.getNode(),
+								`The operation "${operation}" is not supported for Email`,
+								{ itemIndex: i },
+							);
 					}
 				} else if (resource === 'audience') {
 					switch (operation) {
@@ -138,7 +142,11 @@ export class Resend implements INodeType {
 							break;
 
 						default:
-							throw new Error(`The operation "${operation}" is not supported for Audience`);
+							throw new NodeOperationError(
+								this.getNode(),
+								`The operation "${operation}" is not supported for Audience`,
+								{ itemIndex: i },
+							);
 					}
 				} else if (resource === 'contact') {
 					switch (operation) {
@@ -163,7 +171,11 @@ export class Resend implements INodeType {
 							break;
 
 						default:
-							throw new Error(`The operation "${operation}" is not supported for Contact`);
+							throw new NodeOperationError(
+								this.getNode(),
+								`The operation "${operation}" is not supported for Contact`,
+								{ itemIndex: i },
+							);
 					}
 				} else if (resource === 'broadcast') {
 					switch (operation) {
@@ -176,10 +188,18 @@ export class Resend implements INodeType {
 							break;
 
 						default:
-							throw new Error(`The operation "${operation}" is not supported for Broadcast`);
+							throw new NodeOperationError(
+								this.getNode(),
+								`The operation "${operation}" is not supported for Broadcast`,
+								{ itemIndex: i },
+							);
 					}
 				} else {
-					throw new Error(`The resource "${resource}" is not supported`);
+					throw new NodeOperationError(
+						this.getNode(),
+						`The resource "${resource}" is not supported`,
+						{ itemIndex: i },
+					);
 				}
 
 				returnData.push(responseData);

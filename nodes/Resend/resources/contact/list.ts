@@ -38,7 +38,7 @@ export const contactListDescription: INodeProperties[] = [
 					minValue: 1,
 					maxValue: 100,
 				},
-				description: 'Maximum number of contacts to return (1-100)',
+				description: 'Max number of results to return',
 			},
 			{
 				displayName: 'After',

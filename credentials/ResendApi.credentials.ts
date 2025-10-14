@@ -10,6 +10,8 @@ export class ResendApi implements ICredentialType {
 
 	displayName = 'Resend API';
 
+	icon = 'file:resend.svg' as const;
+
 	documentationUrl = 'https://resend.com/docs/introduction';
 
 	properties: INodeProperties[] = [

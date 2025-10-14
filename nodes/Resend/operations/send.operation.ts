@@ -1,7 +1,8 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
 import type { IEmailData } from './types';
 import { parseEmailList } from './types';
-import { RESEND_API_BASE_URL, RESEND_API_ENDPOINTS } from './constants';
+import { RESEND_API_ENDPOINTS } from './constants';
+import { resendApiRequest } from './helpers';
 
 /**
  * Execute the send email operation
@@ -90,13 +91,7 @@ export async function sendEmail(
 	}
 
 	// Make API request
-	const responseData = await this.helpers.requestWithAuthentication.call(this, 'resendApi', {
-		method: 'POST',
-		baseURL: RESEND_API_BASE_URL,
-		url: RESEND_API_ENDPOINTS.EMAILS,
-		body,
-		json: true,
-	});
+	const responseData = await resendApiRequest.call(this, 'POST', RESEND_API_ENDPOINTS.EMAILS, body as unknown as IDataObject);
 
 	return {
 		json: responseData as IDataObject,

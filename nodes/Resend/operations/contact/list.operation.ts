@@ -1,6 +1,7 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
-import { RESEND_API_BASE_URL, RESEND_API_ENDPOINTS } from '../constants';
+import { RESEND_API_ENDPOINTS } from '../constants';
+import { resendApiRequest } from '../helpers';
 
 /**
  * Execute the list contacts operation
@@ -36,13 +37,13 @@ export async function listContacts(
 		);
 	}
 
-	const responseData = await this.helpers.requestWithAuthentication.call(this, 'resendApi', {
-		method: 'GET',
-		baseURL: RESEND_API_BASE_URL,
-		url: RESEND_API_ENDPOINTS.CONTACTS(audienceId),
+	const responseData = await resendApiRequest.call(
+		this,
+		'GET',
+		RESEND_API_ENDPOINTS.CONTACTS(audienceId),
+		undefined,
 		qs,
-		json: true,
-	});
+	);
 
 	return {
 		json: responseData as IDataObject,

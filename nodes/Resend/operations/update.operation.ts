@@ -1,5 +1,6 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
-import { RESEND_API_BASE_URL, RESEND_API_ENDPOINTS } from './constants';
+import { RESEND_API_ENDPOINTS } from './constants';
+import { resendApiRequest } from './helpers';
 
 /**
  * Execute the update scheduled email operation
@@ -11,15 +12,14 @@ export async function updateEmail(
 	const emailId = this.getNodeParameter('emailId', index) as string;
 	const scheduledAt = this.getNodeParameter('scheduledAt', index) as string;
 
-	const responseData = await this.helpers.requestWithAuthentication.call(this, 'resendApi', {
-		method: 'PATCH',
-		baseURL: RESEND_API_BASE_URL,
-		url: RESEND_API_ENDPOINTS.EMAIL_BY_ID(emailId),
-		body: {
+	const responseData = await resendApiRequest.call(
+		this,
+		'PATCH',
+		RESEND_API_ENDPOINTS.EMAIL_BY_ID(emailId),
+		{
 			scheduled_at: scheduledAt,
 		},
-		json: true,
-	});
+	);
 
 	return {
 		json: responseData as IDataObject,

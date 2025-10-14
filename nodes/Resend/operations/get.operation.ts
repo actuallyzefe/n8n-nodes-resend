@@ -1,5 +1,6 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
-import { RESEND_API_BASE_URL, RESEND_API_ENDPOINTS } from './constants';
+import { RESEND_API_ENDPOINTS } from './constants';
+import { resendApiRequest } from './helpers';
 
 /**
  * Execute the get email operation
@@ -10,12 +11,11 @@ export async function getEmail(
 ): Promise<INodeExecutionData> {
 	const emailId = this.getNodeParameter('emailId', index) as string;
 
-	const responseData = await this.helpers.requestWithAuthentication.call(this, 'resendApi', {
-		method: 'GET',
-		baseURL: RESEND_API_BASE_URL,
-		url: RESEND_API_ENDPOINTS.EMAIL_BY_ID(emailId),
-		json: true,
-	});
+	const responseData = await resendApiRequest.call(
+		this,
+		'GET',
+		RESEND_API_ENDPOINTS.EMAIL_BY_ID(emailId),
+	);
 
 	return {
 		json: responseData as IDataObject,

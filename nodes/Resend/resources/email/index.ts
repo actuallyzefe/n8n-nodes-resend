@@ -20,6 +20,30 @@ export const emailDescription: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'Cancel',
+				value: 'cancel',
+				action: 'Cancel a scheduled email',
+				description: 'Cancel a scheduled email before it is sent',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '=/emails/{{$parameter.emailId}}/cancel',
+					},
+				},
+			},
+			{
+				name: 'Get',
+				value: 'get',
+				action: 'Get an email',
+				description: 'Retrieve details of a sent email',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '=/emails/{{$parameter.emailId}}',
+					},
+				},
+			},
+			{
 				name: 'Send',
 				value: 'send',
 				action: 'Send an email',
@@ -44,18 +68,6 @@ export const emailDescription: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get',
-				value: 'get',
-				action: 'Get an email',
-				description: 'Retrieve details of a sent email',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '=/emails/{{$parameter.emailId}}',
-					},
-				},
-			},
-			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a scheduled email',
@@ -64,18 +76,6 @@ export const emailDescription: INodeProperties[] = [
 					request: {
 						method: 'PATCH',
 						url: '=/emails/{{$parameter.emailId}}',
-					},
-				},
-			},
-			{
-				name: 'Cancel',
-				value: 'cancel',
-				action: 'Cancel a scheduled email',
-				description: 'Cancel a scheduled email before it is sent',
-				routing: {
-					request: {
-						method: 'POST',
-						url: '=/emails/{{$parameter.emailId}}/cancel',
 					},
 				},
 			},

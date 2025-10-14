@@ -1,5 +1,6 @@
 import type { IExecuteFunctions, IDataObject, INodeExecutionData } from 'n8n-workflow';
-import { RESEND_API_BASE_URL, RESEND_API_ENDPOINTS } from '../constants';
+import { RESEND_API_ENDPOINTS } from '../constants';
+import { resendApiRequest } from '../helpers';
 
 /**
  * Execute the get contact operation
@@ -21,12 +22,7 @@ export async function getContact(
 		url = RESEND_API_ENDPOINTS.CONTACT_BY_EMAIL(audienceId, email);
 	}
 
-	const responseData = await this.helpers.requestWithAuthentication.call(this, 'resendApi', {
-		method: 'GET',
-		baseURL: RESEND_API_BASE_URL,
-		url,
-		json: true,
-	});
+	const responseData = await resendApiRequest.call(this, 'GET', url);
 
 	return {
 		json: responseData as IDataObject,

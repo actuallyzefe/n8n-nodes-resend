@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-resend-api",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "n8n community node for Resend Email API - Send, schedule, and manage transactional emails",
 	"license": "MIT",
 	"homepage": "https://github.com/actuallyzefe/n8n-nodes-resend",

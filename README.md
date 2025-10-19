@@ -1,4 +1,4 @@
-# n8n-nodes-resend
+# n8n-nodes-resend-api
 
 This is an n8n community node that lets you integrate [Resend](https://resend.com) email API into your n8n workflows.
 

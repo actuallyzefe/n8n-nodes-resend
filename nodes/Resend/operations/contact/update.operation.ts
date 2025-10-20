@@ -10,7 +10,9 @@ export async function updateContact(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData> {
-	const audienceId = this.getNodeParameter('audienceId', index) as string;
+	const audienceId = this.getNodeParameter('audienceId', index, '', {
+		extractValue: true,
+	}) as string;
 	const lookupBy = this.getNodeParameter('lookupBy', index) as string;
 	const updateFields = this.getNodeParameter('updateFields', index, {}) as IDataObject;
 
@@ -39,7 +41,9 @@ export async function updateContact(
 	let url: string;
 
 	if (lookupBy === 'id') {
-		const contactId = this.getNodeParameter('contactId', index) as string;
+		const contactId = this.getNodeParameter('contactId', index, '', {
+			extractValue: true,
+		}) as string;
 		url = RESEND_API_ENDPOINTS.CONTACT_BY_ID(audienceId, contactId);
 	} else {
 		const email = this.getNodeParameter('contactEmail', index) as string;

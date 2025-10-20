@@ -9,7 +9,9 @@ export async function createContact(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData> {
-	const audienceId = this.getNodeParameter('audienceId', index) as string;
+	const audienceId = this.getNodeParameter('audienceId', index, '', {
+		extractValue: true,
+	}) as string;
 	const email = this.getNodeParameter('email', index) as string;
 	const additionalFields = this.getNodeParameter('additionalFields', index, {}) as IDataObject;
 

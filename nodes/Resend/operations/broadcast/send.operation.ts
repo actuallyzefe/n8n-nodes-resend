@@ -9,7 +9,9 @@ export async function sendBroadcast(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData> {
-	const broadcastId = this.getNodeParameter('broadcastId', index) as string;
+	const broadcastId = this.getNodeParameter('broadcastId', index, '', {
+		extractValue: true,
+	}) as string;
 	const options = this.getNodeParameter('options', index, {}) as IDataObject;
 
 	const body: IDataObject = {};

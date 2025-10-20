@@ -4,15 +4,12 @@ import { RESEND_API_ENDPOINTS } from '../constants';
 import { resendApiRequest } from '../helpers';
 
 /**
- * Execute the list contacts operation
+ * Execute the list broadcasts operation
  */
-export async function listContacts(
+export async function listBroadcasts(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData> {
-	const audienceId = this.getNodeParameter('audienceId', index, '', {
-		extractValue: true,
-	}) as string;
 	const options = this.getNodeParameter('options', index, {}) as IDataObject;
 
 	// Build query parameters
@@ -42,7 +39,7 @@ export async function listContacts(
 	const responseData = await resendApiRequest.call(
 		this,
 		'GET',
-		RESEND_API_ENDPOINTS.CONTACTS(audienceId),
+		RESEND_API_ENDPOINTS.BROADCASTS,
 		undefined,
 		qs,
 	);

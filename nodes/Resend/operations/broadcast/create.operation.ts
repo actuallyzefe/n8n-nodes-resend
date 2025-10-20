@@ -10,7 +10,9 @@ export async function createBroadcast(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData> {
-	const audienceId = this.getNodeParameter('audienceId', index) as string;
+	const audienceId = this.getNodeParameter('audienceId', index, '', {
+		extractValue: true,
+	}) as string;
 	const from = this.getNodeParameter('from', index) as string;
 	const subject = this.getNodeParameter('subject', index) as string;
 	const bodyType = this.getNodeParameter('bodyType', index) as string;
@@ -54,7 +56,7 @@ export async function createBroadcast(
 		this,
 		'POST',
 		RESEND_API_ENDPOINTS.BROADCASTS,
-		(body as unknown) as IDataObject,
+		body as unknown as IDataObject,
 	);
 
 	return {

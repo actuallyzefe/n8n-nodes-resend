@@ -1,6 +1,8 @@
 import type {
 	IExecuteFunctions,
+	ILoadOptionsFunctions,
 	INodeExecutionData,
+	INodeListSearchResult,
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
@@ -25,6 +27,7 @@ import {
 	deleteContact,
 	listContacts,
 	createBroadcast,
+	listBroadcasts,
 	sendBroadcast,
 } from './operations';
 
@@ -82,6 +85,206 @@ export class Resend implements INodeType {
 			...contactDescription,
 			...broadcastDescription,
 		],
+	};
+
+	methods = {
+		listSearch: {
+			async searchAudiences(
+				this: ILoadOptionsFunctions,
+				filter?: string,
+				paginationToken?: string,
+			): Promise<INodeListSearchResult> {
+				const credentials = await this.getCredentials('resendApi');
+
+				// Build query parameters
+				let url = 'https://api.resend.com/audiences?limit=100';
+
+				if (paginationToken) {
+					url += `&after=${paginationToken}`;
+				}
+
+				const options = {
+					method: 'GET' as const,
+					url,
+					headers: {
+						Authorization: `Bearer ${credentials.apiKey}`,
+						'Content-Type': 'application/json',
+					},
+					json: true,
+				};
+
+				const response = (await this.helpers.httpRequest(options)) as {
+					object: string;
+					has_more: boolean;
+					data: Array<{ id: string; name: string }>;
+				};
+
+				const audiences = response.data || [];
+				const results = audiences
+					.filter((audience) => {
+						if (!filter) return true;
+						return audience.name.toLowerCase().includes(filter.toLowerCase());
+					})
+					.map((audience) => ({
+						name: audience.name,
+						value: audience.id,
+						url: `https://resend.com/audiences/${audience.id}`,
+					}));
+
+				// Return pagination token if there are more results
+				const paginationResult: INodeListSearchResult = { results };
+
+				if (response.has_more && audiences.length > 0) {
+					// Use the last audience ID as the pagination token for the next page
+					paginationResult.paginationToken = audiences[audiences.length - 1].id;
+				}
+
+				return paginationResult;
+			},
+			async searchBroadcasts(
+				this: ILoadOptionsFunctions,
+				filter?: string,
+				paginationToken?: string,
+			): Promise<INodeListSearchResult> {
+				const credentials = await this.getCredentials('resendApi');
+
+				// Build query parameters
+				let url = 'https://api.resend.com/broadcasts?limit=100';
+
+				if (paginationToken) {
+					url += `&after=${paginationToken}`;
+				}
+
+				const options = {
+					method: 'GET' as const,
+					url,
+					headers: {
+						Authorization: `Bearer ${credentials.apiKey}`,
+						'Content-Type': 'application/json',
+					},
+					json: true,
+				};
+
+				const response = (await this.helpers.httpRequest(options)) as {
+					object: string;
+					has_more: boolean;
+					data: Array<{
+						id: string;
+						audience_id: string;
+						name?: string;
+						status: string;
+						created_at: string;
+						scheduled_at: string | null;
+						sent_at: string | null;
+					}>;
+				};
+
+				const broadcasts = response.data || [];
+				const results = broadcasts
+					.filter((broadcast) => {
+						if (!filter) return true;
+						const searchText =
+							`${broadcast.name || ''} ${broadcast.id} ${broadcast.status}`.toLowerCase();
+						return searchText.includes(filter.toLowerCase());
+					})
+					.map((broadcast) => {
+						const date = broadcast.sent_at || broadcast.scheduled_at || broadcast.created_at;
+						const status = broadcast.status.charAt(0).toUpperCase() + broadcast.status.slice(1);
+						const displayName = broadcast.name
+							? `${broadcast.name} - ${status} (${new Date(date).toLocaleDateString()})`
+							: `${status} - ${new Date(date).toLocaleDateString()} (${broadcast.id.slice(0, 8)}...)`;
+						return {
+							name: displayName,
+							value: broadcast.id,
+							url: `https://resend.com/broadcasts/${broadcast.id}`,
+						};
+					});
+
+				// Return pagination token if there are more results
+				const paginationResult: INodeListSearchResult = { results };
+
+				if (response.has_more && broadcasts.length > 0) {
+					// Use the last broadcast ID as the pagination token for the next page
+					paginationResult.paginationToken = broadcasts[broadcasts.length - 1].id;
+				}
+
+				return paginationResult;
+			},
+			async searchContacts(
+				this: ILoadOptionsFunctions,
+				filter?: string,
+				paginationToken?: string,
+			): Promise<INodeListSearchResult> {
+				// Get the audience ID from the current parameters
+				const audienceId = this.getNodeParameter('audienceId', undefined, {
+					extractValue: true,
+				}) as string;
+
+				if (!audienceId) {
+					return { results: [] };
+				}
+
+				const credentials = await this.getCredentials('resendApi');
+
+				// Build query parameters
+				let url = `https://api.resend.com/audiences/${audienceId}/contacts?limit=100`;
+
+				if (paginationToken) {
+					url += `&after=${paginationToken}`;
+				}
+
+				const options = {
+					method: 'GET' as const,
+					url,
+					headers: {
+						Authorization: `Bearer ${credentials.apiKey}`,
+						'Content-Type': 'application/json',
+					},
+					json: true,
+				};
+
+				const response = (await this.helpers.httpRequest(options)) as {
+					object: string;
+					has_more: boolean;
+					data: Array<{
+						id: string;
+						email: string;
+						first_name?: string;
+						last_name?: string;
+						created_at: string;
+						unsubscribed: boolean;
+					}>;
+				};
+
+				const contacts = response.data || [];
+				const results = contacts
+					.filter((contact) => {
+						if (!filter) return true;
+						const searchText =
+							`${contact.email} ${contact.first_name || ''} ${contact.last_name || ''}`.toLowerCase();
+						return searchText.includes(filter.toLowerCase());
+					})
+					.map((contact) => {
+						const fullName = [contact.first_name, contact.last_name].filter(Boolean).join(' ');
+						const displayName = fullName ? `${contact.email} (${fullName})` : contact.email;
+						return {
+							name: displayName,
+							value: contact.id,
+							url: `https://resend.com/audiences/${audienceId}/contacts/${contact.id}`,
+						};
+					});
+
+				// Return pagination token if there are more results
+				const paginationResult: INodeListSearchResult = { results };
+
+				if (response.has_more && contacts.length > 0) {
+					// Use the last contact ID as the pagination token for the next page
+					paginationResult.paginationToken = contacts[contacts.length - 1].id;
+				}
+
+				return paginationResult;
+			},
+		},
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
@@ -181,6 +384,10 @@ export class Resend implements INodeType {
 					switch (operation) {
 						case 'create':
 							responseData = await createBroadcast.call(this, i);
+							break;
+
+						case 'list':
+							responseData = await listBroadcasts.call(this, i);
 							break;
 
 						case 'send':

@@ -9,7 +9,9 @@ export async function getAudience(
 	this: IExecuteFunctions,
 	index: number,
 ): Promise<INodeExecutionData> {
-	const audienceId = this.getNodeParameter('audienceId', index) as string;
+	const audienceId = this.getNodeParameter('audienceId', index, '', {
+		extractValue: true,
+	}) as string;
 
 	const responseData = await resendApiRequest.call(
 		this,

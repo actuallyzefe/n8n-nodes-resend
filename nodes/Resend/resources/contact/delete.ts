@@ -2,19 +2,44 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const contactDeleteDescription: INodeProperties[] = [
 	{
-		displayName: 'Audience ID',
+		displayName: 'Audience',
 		name: 'audienceId',
-		type: 'string',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
+		required: true,
 		displayOptions: {
 			show: {
 				resource: ['contact'],
 				operation: ['delete'],
 			},
 		},
-		required: true,
-		default: '',
-		placeholder: '78261eea-8f8b-4381-83c6-79fa7120f1cf',
-		description: 'The ID of the audience',
+		description: 'The audience containing the contact',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchAudiences',
+					searchable: true,
+				},
+			},
+			{
+				displayName: 'By ID',
+				name: 'id',
+				type: 'string',
+				placeholder: '78261eea-8f8b-4381-83c6-79fa7120f1cf',
+				validation: [
+					{
+						type: 'regex',
+						properties: {
+							regex: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+							errorMessage: 'Not a valid Audience ID',
+						},
+					},
+				],
+			},
+		],
 	},
 	{
 		displayName: 'Lookup By',
@@ -40,9 +65,11 @@ export const contactDeleteDescription: INodeProperties[] = [
 		description: 'How to identify the contact',
 	},
 	{
-		displayName: 'Contact ID',
+		displayName: 'Contact',
 		name: 'contactId',
-		type: 'string',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
+		required: true,
 		displayOptions: {
 			show: {
 				resource: ['contact'],
@@ -50,10 +77,33 @@ export const contactDeleteDescription: INodeProperties[] = [
 				lookupBy: ['id'],
 			},
 		},
-		required: true,
-		default: '',
-		placeholder: 'e169aa45-1ecf-4183-9955-b1499d5701d3',
-		description: 'The unique identifier of the contact to delete',
+		description: 'The contact to delete',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchContacts',
+					searchable: true,
+				},
+			},
+			{
+				displayName: 'By ID',
+				name: 'id',
+				type: 'string',
+				placeholder: 'e169aa45-1ecf-4183-9955-b1499d5701d3',
+				validation: [
+					{
+						type: 'regex',
+						properties: {
+							regex: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
+							errorMessage: 'Not a valid Contact ID',
+						},
+					},
+				],
+			},
+		],
 	},
 	{
 		displayName: 'Email',

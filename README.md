@@ -21,7 +21,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 1. Go to **Settings > Community Nodes**
 2. Select **Install**
-3. Enter `n8n-nodes-resend` in **Enter npm package name**
+3. Enter `n8n-nodes-resend-api` in **Enter npm package name**
 4. Agree to the [risks](https://docs.n8n.io/integrations/community-nodes/risks/) of using community nodes
 5. Select **Install**
 
@@ -36,7 +36,7 @@ npm install n8n-nodes-resend
 For Docker-based deployments, add the following line to your `Dockerfile`:
 
 ```dockerfile
-RUN cd /usr/local/lib/node_modules/n8n && npm install n8n-nodes-resend
+RUN cd /usr/local/lib/node_modules/n8n && npm install n8n-nodes-resend-api
 ```
 
 ## Operations

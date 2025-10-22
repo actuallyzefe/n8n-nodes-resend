@@ -30,7 +30,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 To get started install the package in your n8n root directory:
 
 ```bash
-npm install n8n-nodes-resend
+npm install n8n-nodes-resend-api
 ```
 
 For Docker-based deployments, add the following line to your `Dockerfile`:
